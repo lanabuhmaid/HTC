@@ -1,0 +1,33 @@
+const express = require('express');
+const path = require('path');  // للاستفادة من مسارات الملفات
+const cors = require('cors');
+
+const app = express();
+
+// استخدام CORS لتسمح للـ HTML بالوصول للسيرفر
+app.use(cors());
+app.use(express.json());
+
+// بيانات الطلبات التدريبية كمثال
+const applications = [
+    { id: 1, name: "Lana Abu-Hmaid", email: "lana@example.com", cv_url: "/cv_files/cv1.pdf", status: "Pending" },
+    { id: 2, name: "Ahmad Ali", email: "ahmad@example.com", cv_url: "/cv_files/cv2.pdf", status: "Accepted" }
+];
+
+// مسار الجذر الرئيسي لعرض صفحة HTML
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));  // إرسال ملف index.html
+});
+
+// API لاسترجاع الطلبات التدريبية
+app.get('/company/:companyId/applications', (req, res) => {
+    res.json(applications);  // إرجاع بيانات الطلبات
+});
+
+// مسار لعرض السيرة الذاتية للطالب
+app.use('/cv_files', express.static(path.join(__dirname, 'cv_files')));
+
+// تشغيل السيرفر
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
